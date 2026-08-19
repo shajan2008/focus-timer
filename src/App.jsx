@@ -1,4 +1,26 @@
+import { useState, useEffect} from "react";
+const TIMER_MODES = {
+  WORK :{
+    label : 'Focus(25m)',
+    duration : 25 * 60
+  },
+  SHORT_BREAK : {
+    label : 'Short Break(5m)',
+    duration : 5 * 60,
+  },
+  LONG_BREAK : {
+    label : 'Long Break(15m)',
+    duration : 15 * 60,
+  },
+};
 function App() {
+  let currentMode = `WORK`;
+  let secondsLeft = TIMER_MODES.WORK.duration;
+  let isRunning = false;
+  let history = JSON.parse(localStorage)
+
+
+
   return(
     <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md flex flex-col gap-6">
