@@ -1,4 +1,4 @@
-import { useState, useEffect} from "react";
+import { useState, useEffect, use} from "react";
 const TIMER_MODES = {
   WORK :{
     label : 'Focus(25m)',
@@ -14,7 +14,9 @@ const TIMER_MODES = {
   },
 };
 function App() {
-  
+  const [currentMode, setCurrentMode] = useState(`WORK`);
+  const [secondsLeft, setSecondsLeft] = useState(TIMER_MODES.currentMode.duration);
+  const [isRunnig, setIsRunning] = useState(false);
   const [history, setHistory] = useState(() =>{
     try {
       const savedHistory = localStorage.getItem('focus_session_history');
@@ -30,7 +32,9 @@ function App() {
       return [];
     }
   });
-
+  useEffect(() => {
+    localStorage.setItem(JSON.stringify(`focus_session_history`,history));
+  }, [history]);
   return(
     <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md flex flex-col gap-6">
