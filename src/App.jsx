@@ -14,12 +14,22 @@ const TIMER_MODES = {
   },
 };
 function App() {
-  let currentMode = `WORK`;
-  let secondsLeft = TIMER_MODES.WORK.duration;
-  let isRunning = false;
-  let history = JSON.parse(localStorage)
-
-
+  
+  const [history, setHistory] = useState(() =>{
+    try {
+      const savedHistory = localStorage.getItem('focus_session_history');
+      if(savedHistory != null){
+        return JSON.parse(savedHistory);
+      }
+      else if(savedHistory === null){
+        return [];
+      }
+    }
+    catch (error){
+      console.error(`${error} occured`);
+      return [];
+    }
+  });
 
   return(
     <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-6">
