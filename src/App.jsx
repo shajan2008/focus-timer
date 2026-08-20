@@ -35,6 +35,15 @@ function App() {
   useEffect(() => {
     localStorage.setItem(JSON.stringify(`focus_session_history`,history));
   }, [history]);
+  const totalDuration = TIMER_MODES[currentMode].duration;
+  const minutes = Math.floor(secondsLeft/60);
+  const seconds = secondsLeft % 60;
+  const formattedTime = `${minutes}:${seconds}`.padStart(2, '0');
+  const circumference = 628.32;
+  const strokeDashoffset = circumference * (1-(secondsLeft/totalDuration));
+  const handleModeChange = (selectedMode) => {
+    currentMode = selectedMode;
+  };
   return(
     <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md flex flex-col gap-6">
