@@ -1,5 +1,4 @@
 import { useState, useEffect, use} from "react";
-import { preview } from "vite";
 const TIMER_MODES = {
   WORK :{
     label : 'Focus(25m)',
@@ -16,7 +15,7 @@ const TIMER_MODES = {
 };
 function App() {
   const [currentMode, setCurrentMode] = useState(`WORK`);
-  const [secondsLeft, setSecondsLeft] = useState(TIMER_MODES.currentMode.duration);
+  const [secondsLeft, setSecondsLeft] = useState(TIMER_MODES['WORK'].duration);
   const [isRunnig, setIsRunning] = useState(false);
   const [history, setHistory] = useState(() =>{
     try {
@@ -34,26 +33,28 @@ function App() {
     }
   });
   useEffect(() => {
-    localStorage.setItem(JSON.stringify(`focus_session_history`,history));
+    localStorage.setItem(`focus_session_history`, JSON.stringify(history));
   }, [history]);
   const totalDuration = TIMER_MODES[currentMode].duration;
   const minutes = Math.floor(secondsLeft/60);
   const seconds = secondsLeft % 60;
-  const formattedTime = `${minutes}:${seconds}`.padStart(2, '0');
+  const formattedMinutes = String(minutes).padStart(2, '0');
+  const formattedSeconds = String(seconds).padStart(2, '0');
+  const formattedTime = `${formattedMinutes}:${formattedSeconds}`;
   const circumference = 628.32;
   const strokeDashoffset = circumference * (1-(secondsLeft/totalDuration));
-  const handleModeChange = (selectedMode) => {
+  function handleModeChange(selectedMode) {
     setCurrentMode(selectedMode);
     setSecondsLeft(TIMER_MODES[selectedMode].duration);
     setIsRunning(false);
   };
-  const handleToggleTimer = () =>{
+  function handleToggleTimer(){
     setIsRunning((prev) => !prev);
   };
-  const handleReset = () =>{
+  function handleReset(){
     setIsRunning(false);
     setSecondsLeft(TIMER_MODES[currentMode].duration);
-  }
+  };
 
   return(
     <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-6">
@@ -69,16 +70,16 @@ function App() {
         <section className="bg-slate-900/60 border border-slate-800 rounded-3xl p-8 shadow-2xl backdrop-blur-sm flex flex-col items-center gap-8"> 
           <nav className="flex bg-slate-950/80 p-1.5 rounded-2xl border border-slate-800/60 w-full">
             <button className="flex-1 py-2 text-xs font-semibold rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30 transition" onClick={() => handleModeChange('WORK')}>Work</button>
-            <button className="flex-1 py-2 text-xs font-semibold rounded-xl text-slate-400 hover:text-slate-200 transition" onClick={() => handleModeChange('SHORT BREAK')}>Short Break</button>
-            <button className="flex-1 py-2 text-xs font-semibold rounded-xl text-slate-400 hover:text-slate-200 transition" onClick={() => handleModeChange('LONG BREAK')}>Long Break</button>
+            <button className="flex-1 py-2 text-xs font-semibold rounded-xl text-slate-400 hover:text-slate-200 transition" onClick={() => handleModeChange('SHORT_BREAK')}>Short Break</button>
+            <button className="flex-1 py-2 text-xs font-semibold rounded-xl text-slate-400 hover:text-slate-200 transition" onClick={() => handleModeChange('LONG_BREAK')}>Long Break</button>
           </nav>
           <div className="relative flex items-center justify-center w-64 h-64 my-2">
             <svg className="w-full h-full -rotate-90">
               <circle className="text-slate-800" cx={"128"} cy={"128"} r={"100"} stroke="currentColor" strokeWidth={"10"} fill="transparent"></circle>
-              <circle className="text-rose-500 transition-all duration-500" cx={"128"} cy={"128"} r={"100"} stroke="currentColor" strokeWidth={"10"} strokeLinecap="round" fill="transparent"></circle>
+              <circle className="text-rose-500 transition-all duration-500" cx={"128"} cy={"128"} r={"100"} stroke="currentColor" strokeWidth={"10"} strokeLinecap="round" fill="transparent" strokeDasharray={circumference} strokeDashoffset={strokeDashoffset}></circle>
             </svg>
             <div className="absolute flex flex-col items-center justify-center text-center">
-              <span className="text-5xl font-mono uppercase font-extrabold text-slate-100 tracking-tight">25:00</span>
+              <span className="text-5xl font-mono uppercase font-extrabold text-slate-100 tracking-tight">{formattedTime}</span>
               <span className="text-xs uppercase tracking-widest font-semibold text-slate-400 mt-1">stay focused</span>
             </div>
           </div>
