@@ -1,4 +1,5 @@
 import { useState, useEffect, use} from "react";
+import { preview } from "vite";
 const TIMER_MODES = {
   WORK :{
     label : 'Focus(25m)',
@@ -42,8 +43,18 @@ function App() {
   const circumference = 628.32;
   const strokeDashoffset = circumference * (1-(secondsLeft/totalDuration));
   const handleModeChange = (selectedMode) => {
-    currentMode = selectedMode;
+    setCurrentMode(selectedMode);
+    setSecondsLeft(TIMER_MODES[selectedMode].duration);
+    setIsRunning(false);
   };
+  const handleToggleTimer = () =>{
+    setIsRunning((prev) => !prev);
+  };
+  const handleReset = () =>{
+    setIsRunning(false);
+    setSecondsLeft(TIMER_MODES[currentMode].duration);
+  }
+
   return(
     <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md flex flex-col gap-6">
@@ -57,9 +68,9 @@ function App() {
         </header>
         <section className="bg-slate-900/60 border border-slate-800 rounded-3xl p-8 shadow-2xl backdrop-blur-sm flex flex-col items-center gap-8"> 
           <nav className="flex bg-slate-950/80 p-1.5 rounded-2xl border border-slate-800/60 w-full">
-            <button className="flex-1 py-2 text-xs font-semibold rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30 transition">Work</button>
-            <button className="flex-1 py-2 text-xs font-semibold rounded-xl text-slate-400 hover:text-slate-200 transition">Short Break</button>
-            <button className="flex-1 py-2 text-xs font-semibold rounded-xl text-slate-400 hover:text-slate-200 transition">Long Break</button>
+            <button className="flex-1 py-2 text-xs font-semibold rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30 transition" onClick={() => handleModeChange('WORK')}>Work</button>
+            <button className="flex-1 py-2 text-xs font-semibold rounded-xl text-slate-400 hover:text-slate-200 transition" onClick={() => handleModeChange('SHORT BREAK')}>Short Break</button>
+            <button className="flex-1 py-2 text-xs font-semibold rounded-xl text-slate-400 hover:text-slate-200 transition" onClick={() => handleModeChange('LONG BREAK')}>Long Break</button>
           </nav>
           <div className="relative flex items-center justify-center w-64 h-64 my-2">
             <svg className="w-full h-full -rotate-90">
@@ -72,7 +83,7 @@ function App() {
             </div>
           </div>
           <div className="flex items-center gap-4 w-full">
-            <button className="flex-1 py-3.5 rounded-2xl bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-bold text-sm tracking-wide shadow-lg shadow-rose-950/40 transition">START/PAUSE</button>
+            <button className="flex-1 py-3.5 rounded-2xl bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-bold text-sm tracking-wide shadow-lg shadow-rose-950/40 transition" onClick={handleToggleTimer}>{isRunnig ? 'PAUSE' : 'START FOCUS'}</button>
             <button className="p-3.5 rounded-2xl bg-slate-800/80 hover:bg-slate-700/80 active:scale-95 text-slate-300 border border-slate-700/50 transition">RESET</button>
           </div>
         </section>
