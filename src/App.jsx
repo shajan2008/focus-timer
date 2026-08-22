@@ -55,6 +55,33 @@ function App() {
     setIsRunning(false);
     setSecondsLeft(TIMER_MODES[currentMode].duration);
   };
+  if(secondsLeft === 0){
+    setIsRunning(false);
+    setHistory(currentMode);
+    setSecondsLeft(TIMER_MODES[currentMode].duration);
+  }
+  useEffect(() => {
+    if(isRunnig === false || secondsLeft <= 0) return;
+
+    const id = setInterval(() =>{
+      setSecondsLeft(prev => {
+        if(prev > 1)
+          return prev-1;
+        else if(prev === 1){
+          setIsRunning(false);
+          const newSession = {
+            id : Date.now(),
+            mode : TIMER_MODES[currentMode].label,
+            duration : TIMER_MODES[currentMode].duration / 60,
+            completedAt : new Date().toLocaleTimeString([], {hour : '2-digit', minute : '2-digit'}),
+          }
+          setHistory(prevHistory => [newSession, ...prevHistory]);
+          setSecondsLeft(TIMER_MODES[currentMode].duration);
+        }
+      })
+    }, 1000); 
+  return () => clearInterval(id);
+}, [isRunnig])
 
   return(
     <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-6">
